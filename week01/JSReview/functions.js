@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const returnEmptyString = function () {
     return ""
 };
@@ -79,6 +80,35 @@ const arraySum = function (array) {
     return sum;
 };
 console.log(arraySum([6, 12, 18, 24]))
+=======
+const returnEmptyString = function () {};
+
+const returnZeroNumber = function () {};
+
+const returnEmptyArray = function () {};
+
+const returnEmptyObject = function () {};
+
+const returnString = function () {};
+
+const addition = function () {};
+
+const subtraction = function () {};
+
+const multiplication = function () {};
+
+const division = function () {};
+
+const returnArray = function () {};
+
+const returnFirstIndex = function () {};
+
+const returnSecondIndex = function () {};
+
+const returnArrayLength = function () {};
+
+const arraySum = function () {};
+>>>>>>> 55f0e3ef299fc92537ba19263272aa1b0cb27851
 
 const arraySubtraction = function () {};
 
