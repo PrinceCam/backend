@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import axios from "axios";
+import { useState, useEffect } from 'react'
+
+import './App.css'
+import axios from 'axios'
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -12,72 +11,113 @@ function App() {
 
   const [newTodo, setNewTodo] = useState("");
 
+  // test
+  const [newToDo, setNewToDo] = useState(
+    {
+      todo: "",
+      created: Date.now()
+    }
+  )
+
+
+  useEffect(() => {
+    console.log("useEFFECT TRIGGERED")
+  }, [data])
+
+
   useEffect(() => {
     
     axios({
       method: "get",
       url: "http://localhost:3000/gettodos",
     })
-      .then((res) => {
-        console.log("res", res);
-        setData(res.data);
-      })
-      .catch((err) => console.log("err", err));
-  }, []);
+      .then(res => {
+        console.log("res", res)
+        // console.log("sorted", sorted)
+        setData(res.data)
 
-  // add a new todo
-  const handleAddTodo = () => {
-    if (!newTodo.trim()) return;
-    // empty todo
-    const todoItem = {
-      todo: newTodo,
-      create: new Date(),
-    };
+      })
+      .catch(err => console.log("err", err))
+
+  }, [])
+
+  const handleNewToDo = (e) => {
+
+    console.log("handleNewToDo Hit", e)
+    console.log("handleNewToDo Hit", e.target)
+    console.log("handleNewToDo Hit", e.target.value)
+
+    setNewToDo((prev) => ({
+      ...prev,
+      todo: e.target.value
+    }))
+
+
+  }
+  const handleSubmit = (e) => {
+
+    console.log("HandleSubmit HIT", newToDo)
+
+    console.log("i am getting stuff")
     axios({
       method: "post",
-      url: "http://locolhost:3000/create",
-      data: todoItem, //this send it to the newTodo to the back end
+      url: "http://localhost:3000/create",
+      data: newToDo
     })
-      .then((res) => {
-        console.log("todo add it", res);
-        setData([...data, res.data]); // add the method to the state
-        setNewTodo(""); // clears the input feild
+      .then(res => {
+        console.log("res", res)
+        // setNewToDo({todo: ""})
       })
-      .catch((err) => console.log("error adding todo", { err }));
-  };
+      .catch(err => console.log(reportError))
 
-  return (
-    <>
-      <div>
-        <h1>To-do-matic</h1>
-        {console.log("newTod:", newTodo)}
-        {/**input field and buttonfor adding new todo */}
-        <div style={{marginBottom: "20px"}}>
-          <input
-          type="text"
-          placeholder="Enter a new todo"
-          value={newTodo}
-          onChange={(e) => setNeewTodo(e.target.value)}
-          style={{marginRight: "10px", padding: "5px"}}
-          />
-          <button onClick={handleAddTodo} style={{padding: "5px"}}>Add Todo</button>
+  }
+
+  const handleDelete = (e) => {
+    console.log("DEL Hit", e.target.id)
+
+    axios({
+      method: "delete",
+      url: `http://localhost:3000/delete/${e.target.id}`
+    })
+    .then(res => {
+      console.log("re", res)
+      console.log(res.data._id)
+      setData((prev) => prev.filter((item) => item._id != res.data._id))
+    })
+    .catch(err => console.log(err))
+  }
+
+
+
+
+return (
+  <>
+    {console.log("data", data)}
+    {console.log("newToDo", newToDo)}
+
+    <input value={newToDo.todo || ""} onChange={(e) => handleNewToDo(e)} />
+
+    <button onClick={(e) => handleSubmit(e)}>Submit</button>
+
+
+    {data && data.sort((a,b) =>  b.created - a.created).map((item) => {
+      return (
+
+        <div key={item._id}  style={{ marginBottom: "20px" }}>
+
+          <div style={{ border: '2px solid red' }}>
+
+            <p> {item.todo}</p>
+            <button id={item._id} onClick={(e) => handleDelete(e)}>delete</button>
+            <button>edit</button>
+
+          </div>
         </div>
-      </div>
+      )
+    })}
 
-      {console.log("data", data)}
-
-      {data &&
-        data.map((item) => {
-          return (
-            <div style={{ border: "2px solid red" }}>
-              <p> {item.todo}</p>
-              <button>delete</button>
-              <button>edit</button>
-            </div>
-          );
-        })}
-    </>
-  );
+  </>
+)
 }
 
 export default App;
